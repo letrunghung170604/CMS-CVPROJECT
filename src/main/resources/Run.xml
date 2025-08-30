@@ -1,0 +1,17 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+
+<suite name="CMS" verbose="1">
+
+    <parameter name="browserType" value="chrome" />
+    <parameter name="webURL" value="https://cms.anhtester.com" />
+
+    <test name="cms" parallel="classes" thread-count="5">
+        <classes>
+            <class name="DoProject.TestCases.LoginTest"/>
+            <class name="DoProject.TestCases.DashboardTest"/>
+            <class name="DoProject.TestCases.HomeGetProductTest"/>
+            <class name="DoProject.TestCases.HomeAddProductTest"/>
+            <class name="DoProject.TestCases.HomeCheckoutTest"/>
+        </classes>
+    </test>
+</suite>

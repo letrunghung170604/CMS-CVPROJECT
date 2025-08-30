@@ -1,0 +1,71 @@
+package DoProject.TestCases;
+
+import DoPrepare.Common.Listener;
+import DoPrepare.Common.SetUp;
+import DoPrepare.Help.CaptureHelp;
+import DoPrepare.Help.ExcelHelp;
+import DoProject.Pages.HomeCheckout;
+import DoProject.Pages.Login;
+import io.qameta.allure.Description;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Step;
+import io.qameta.allure.Story;
+import org.openqa.selenium.WebDriver;
+import org.testng.ITestResult;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Listeners;
+import org.testng.annotations.Test;
+
+@Epic("E-Commerce Functionality")
+@Feature("Checkout Process")
+@Listeners(Listener.class)
+public class HomeCheckoutTest extends SetUp {
+
+    private WebDriver driver;
+    private Login login;
+    private HomeCheckout homecheckout;
+    private ExcelHelp excelhelp;
+
+    @BeforeMethod
+    public void setUpDriver()
+    {
+        driver = getDriver();
+        login = new Login(driver);
+        homecheckout = new HomeCheckout(driver);
+        excelhelp = new ExcelHelp();
+    }
+
+    @AfterMethod
+    public void takeScreenshot(ITestResult result) throws InterruptedException {
+        Thread.sleep(1000);
+        if (ITestResult.FAILURE == result.getStatus()) {
+            try {
+                CaptureHelp.captureScreenshot(driver, result.getName());
+            } catch (Exception e) {
+                System.out.println("Exception while taking screenshot " + e.getMessage());
+            }
+        }
+    }
+
+    @Step
+    @Test(priority = 1)
+    @Story("System Login")
+    @Description("Test login functionality with user credentials")
+    public void loginTest() throws Exception {
+        excelhelp.setExcelFile("src/main/resources/ExcellFile.xlsx", "LoginData");
+        login.confirmLogin();
+        login.doLogin(excelhelp.getCellData("USERNAME", 1), excelhelp.getCellData("PASSWORD", 1));
+    }
+
+    @Step
+    @Test(priority = 2)
+    @Story("Checkout Operations")
+    @Description("Test checkout process with user-provided data")
+    public void homeCheckoutTest() throws Exception {
+        excelhelp.setExcelFile("src/main/resources/ExcellFile.xlsx", "HomeCheckoutData");
+        homecheckout.confirmHomeCheckout();
+        homecheckout.doHomeCheckOut(excelhelp.getCellData("ADDRESS", 1), excelhelp.getCellData("COUNTRY", 1), excelhelp.getCellData("STATE", 1), excelhelp.getCellData("POSTAL CODE", 1), excelhelp.getCellData("PHONE", 1), excelhelp.getCellData("TEXT", 1));
+    }
+}
